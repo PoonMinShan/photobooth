@@ -1,0 +1,176 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>My Photobooth</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <main class="app">
+
+        <!-- HEADER -->
+        <header class="header">
+            <h1>PHOTOBOOTH</h1>
+            <p>Choose your look & capture the moment.</p>
+        </header>
+
+
+        <!-- CAMERA -->
+        <section class="camera-section">
+
+            <div class="camera-wrapper">
+
+                <video
+                    id="camera"
+                    autoplay
+                    playsinline
+                    muted
+                ></video>
+
+                <canvas id="canvas"></canvas>
+
+                <div
+                    id="countdown"
+                    class="countdown hidden"
+                ></div>
+
+            </div>
+
+
+            <!-- CAMERA CONTROLS -->
+
+            <div class="camera-controls">
+
+                <button
+                    id="switchCamera"
+                    class="small-button"
+                >
+                    ↻ Switch Camera
+                </button>
+
+            </div>
+
+
+            <!-- FILTERS -->
+
+            <section class="filters">
+
+                <h2>Choose your look</h2>
+
+                <div class="filter-buttons">
+
+                    <button
+                        class="filter-button active"
+                        data-filter="normal"
+                    >
+                        Normal
+                    </button>
+
+                    <button
+                        class="filter-button"
+                        data-filter="retro"
+                    >
+                        Retro B&W
+                    </button>
+
+                    <button
+                        class="filter-button"
+                        data-filter="y2k"
+                    >
+                        Y2K
+                    </button>
+
+                    <button
+                        class="filter-button"
+                        data-filter="film"
+                    >
+                        Film
+                    </button>
+
+                    <button
+                        class="filter-button"
+                        data-filter="glow"
+                    >
+                        Glow
+                    </button>
+
+                </div>
+
+            </section>
+
+
+            <!-- TAKE PHOTO -->
+
+            <button
+                id="takePhoto"
+                class="take-photo"
+            >
+                <span>●</span>
+            </button>
+
+        </section>
+
+
+        <!-- RESULT -->
+
+        <section
+            id="resultSection"
+            class="result-section hidden"
+        >
+
+            <h2>Your Photo</h2>
+
+            <div class="photo-container">
+
+                <img
+                    id="photoResult"
+                    alt="Your photobooth photo"
+                >
+
+            </div>
+
+            <div class="result-buttons">
+
+                <button
+                    id="retake"
+                    class="secondary-button"
+                >
+                    Retake
+                </button>
+
+                <button
+                    id="download"
+                    class="primary-button"
+                >
+                    Download Photo
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- FOOTER -->
+
+        <footer>
+            <p>Made with ♡</p>
+        </footer>
+
+    </main>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>
+```
