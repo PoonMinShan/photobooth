@@ -11,42 +11,60 @@ const photoResult = document.getElementById("photoResult");
 const retakeButton = document.getElementById("retake");
 const downloadButton = document.getElementById("download");
 
-const filterButtons = document.querySelectorAll(".filter-button");
+const filterButtons =
+    document.querySelectorAll(".filter-button");
+
 
 let currentStream = null;
 let currentFilter = "normal";
 let usingFrontCamera = true;
 
 
-/* =========================
+/* =====================================================
    CAMERA
-========================= */
+===================================================== */
 
 async function startCamera() {
 
     try {
 
+        /* Stop old camera */
+
         if (currentStream) {
-            currentStream.getTracks().forEach(track => {
-                track.stop();
-            });
+
+            currentStream
+                .getTracks()
+                .forEach(track => track.stop());
+
         }
+
+
+        /* Check camera support */
 
         if (
             !navigator.mediaDevices ||
             !navigator.mediaDevices.getUserMedia
         ) {
+
             alert(
                 "Your browser does not support camera access."
             );
+
             return;
+
         }
 
+
+        /* Camera settings */
+
         const constraints = {
+
             video: {
-                facingMode: usingFrontCamera
-                    ? "user"
-                    : "environment",
+
+                facingMode:
+                    usingFrontCamera
+                        ? "user"
+                        : "environment",
 
                 width: {
                     ideal: 1920
@@ -55,43 +73,67 @@ async function startCamera() {
                 height: {
                     ideal: 1080
                 }
+
             },
 
             audio: false
+
         };
 
-        currentStream =
-            await navigator.mediaDevices.getUserMedia(
-                constraints
-            );
 
-        video.srcObject = currentStream;
+        /* Request camera */
+
+        currentStream =
+            await navigator.mediaDevices
+                .getUserMedia(constraints);
+
+
+        /* Attach camera */
+
+        video.srcObject =
+            currentStream;
+
 
         video.muted = true;
         video.playsInline = true;
 
+
         await video.play();
 
-        updateCameraFilter();
+
+        /* Apply preview */
+
+        updateCameraPreview();
 
     }
 
+
     catch (error) {
 
-        console.error("Camera error:", error);
+        console.error(
+            "Camera error:",
+            error
+        );
 
-        if (error.name === "NotAllowedError") {
+
+        if (
+            error.name ===
+            "NotAllowedError"
+        ) {
 
             alert(
-                "Camera permission was denied. Please allow camera access and refresh the page."
+                "Camera permission was denied. Please allow camera access in Safari Settings."
             );
 
         }
 
-        else if (error.name === "NotFoundError") {
+        else if (
+            error.name ===
+            "NotFoundError"
+        ) {
 
             alert(
-                "No camera was found on this device."
+                "No camera was found."
             );
 
         }
@@ -99,7 +141,7 @@ async function startCamera() {
         else {
 
             alert(
-                "We could not access your camera. Please check your browser permissions."
+                "We could not access your camera."
             );
 
         }
@@ -109,22 +151,24 @@ async function startCamera() {
 }
 
 
-/* =========================
-   START
-========================= */
+/* =====================================================
+   START CAMERA
+===================================================== */
 
 startCamera();
 
 
-/* =========================
+/* =====================================================
    SWITCH CAMERA
-========================= */
+===================================================== */
 
 switchCameraButton.addEventListener(
     "click",
     async () => {
 
-        usingFrontCamera = !usingFrontCamera;
+        usingFrontCamera =
+            !usingFrontCamera;
+
 
         await startCamera();
 
@@ -132,38 +176,34 @@ switchCameraButton.addEventListener(
 );
 
 
-/* =========================
-   FILTER BUTTONS
-========================= */
+/* =====================================================
+   UPDATE CAMERA PREVIEW
+===================================================== */
 
-filterButtons.forEach(button => {
+function updateCameraPreview() {
 
-    button.addEventListener(
-        "click",
-        () => {
+    /*
+       Mirror ONLY the front camera.
+    */
 
-            filterButtons.forEach(btn => {
-                btn.classList.remove("active");
-            });
+    if (usingFrontCamera) {
 
-            button.classList.add("active");
+        video.style.transform =
+            "scaleX(-1)";
 
-            currentFilter =
-                button.dataset.filter;
+    }
 
-            updateCameraFilter();
+    else {
 
-        }
-    );
+        video.style.transform =
+            "scaleX(1)";
 
-});
+    }
 
 
-/* =========================
-   PREVIEW FILTER
-========================= */
-
-function updateCameraFilter() {
+    /*
+       Apply visual filter to preview.
+    */
 
     switch (currentFilter) {
 
@@ -201,53 +241,69 @@ function updateCameraFilter() {
 
         default:
 
-            video.style.filter = "none";
+            video.style.filter =
+                "none";
 
     }
 
 }
 
 
-/* =========================
-   GET CANVAS FILTER
-========================= */
+/* =====================================================
+   FILTER BUTTONS
+===================================================== */
 
-function getCanvasFilter() {
+filterButtons.forEach(button => {
 
-    switch (currentFilter) {
+    button.addEventListener(
+        "click",
+        () => {
 
-        case "retro":
+            /*
+               Remove active
+            */
 
-            return "grayscale(1) contrast(1.35) brightness(1.05)";
+            filterButtons.forEach(btn => {
 
+                btn.classList.remove(
+                    "active"
+                );
 
-        case "y2k":
-
-            return "saturate(1.5) contrast(1.05) brightness(1.08)";
-
-
-        case "film":
-
-            return "contrast(1.12) saturate(0.82) brightness(1.03)";
-
-
-        case "glow":
-
-            return "brightness(1.12) contrast(0.9) saturate(1.08)";
+            });
 
 
-        default:
+            /*
+               Add active
+            */
 
-            return "none";
-
-    }
-
-}
+            button.classList.add(
+                "active"
+            );
 
 
-/* =========================
+            /*
+               Save filter
+            */
+
+            currentFilter =
+                button.dataset.filter;
+
+
+            /*
+               Update preview
+            */
+
+            updateCameraPreview();
+
+        }
+    );
+
+});
+
+
+/* =====================================================
    TAKE PHOTO
-========================= */
+===================================================== */
 
 takePhotoButton.addEventListener(
     "click",
@@ -255,51 +311,73 @@ takePhotoButton.addEventListener(
 );
 
 
+/* =====================================================
+   COUNTDOWN
+===================================================== */
+
 function startCountdown() {
 
     let number = 3;
 
-    countdown.classList.remove("hidden");
 
-    countdown.textContent = number;
+    countdown.classList.remove(
+        "hidden"
+    );
 
 
-    const timer = setInterval(() => {
+    countdown.textContent =
+        number;
 
-        number--;
 
-        if (number > 0) {
+    const timer =
+        setInterval(() => {
 
-            countdown.textContent = number;
+            number--;
 
-        }
 
-        else {
+            if (number > 0) {
 
-            clearInterval(timer);
+                countdown.textContent =
+                    number;
 
-            countdown.textContent = "♥";
+            }
 
-            setTimeout(() => {
+            else {
 
-                countdown.classList.add("hidden");
+                clearInterval(timer);
 
-                capturePhoto();
 
-            }, 300);
+                countdown.textContent =
+                    "♥";
 
-        }
 
-    }, 1000);
+                setTimeout(() => {
+
+                    countdown.classList.add(
+                        "hidden"
+                    );
+
+
+                    capturePhoto();
+
+                }, 300);
+
+            }
+
+        }, 1000);
 
 }
 
 
-/* =========================
+/* =====================================================
    CAPTURE PHOTO
-========================= */
+===================================================== */
 
 function capturePhoto() {
+
+    /*
+       Make sure camera is ready.
+    */
 
     if (
         !video.videoWidth ||
@@ -307,7 +385,7 @@ function capturePhoto() {
     ) {
 
         alert(
-            "The camera is not ready yet. Please wait a moment and try again."
+            "Camera is not ready yet. Please wait a moment."
         );
 
         return;
@@ -322,8 +400,15 @@ function capturePhoto() {
         video.videoHeight;
 
 
-    canvas.width = width;
-    canvas.height = height;
+    /*
+       Set canvas size.
+    */
+
+    canvas.width =
+        width;
+
+    canvas.height =
+        height;
 
 
     const context =
@@ -331,36 +416,42 @@ function capturePhoto() {
 
 
     /*
-       IMPORTANT:
-
-       We apply the filter directly
-       to the canvas BEFORE drawing
-       the video.
+       Clear canvas.
     */
 
-    context.filter =
-        getCanvasFilter();
+    context.clearRect(
+        0,
+        0,
+        width,
+        height
+    );
 
+
+    /*
+       Mirror front camera.
+    */
 
     context.save();
 
 
-    /* =========================
-       MIRROR FRONT CAMERA
-    ========================= */
-
     if (usingFrontCamera) {
 
-        context.translate(width, 0);
+        context.translate(
+            width,
+            0
+        );
 
-        context.scale(-1, 1);
+        context.scale(
+            -1,
+            1
+        );
 
     }
 
 
-    /* =========================
-       DRAW FILTERED PHOTO
-    ========================= */
+    /*
+       Draw camera image.
+    */
 
     context.drawImage(
         video,
@@ -375,30 +466,66 @@ function capturePhoto() {
 
 
     /*
-       Reset canvas filter
-       after capturing.
+       Get image pixels.
+
+       This is important because
+       Safari can be inconsistent
+       with canvas.filter.
     */
 
-    context.filter = "none";
+    const imageData =
+        context.getImageData(
+            0,
+            0,
+            width,
+            height
+        );
 
 
-    /* =========================
-       CREATE IMAGE
-    ========================= */
+    /*
+       Apply the selected filter
+       directly to the pixels.
+    */
+
+    applyPixelFilter(
+        imageData
+    );
+
+
+    /*
+       Put filtered pixels
+       back onto canvas.
+    */
+
+    context.putImageData(
+        imageData,
+        0,
+        0
+    );
+
+
+    /*
+       Create final JPEG.
+    */
 
     const image =
         canvas.toDataURL(
             "image/jpeg",
-            0.95
+            0.92
         );
 
 
-    photoResult.src = image;
+    /*
+       Display photo.
+    */
+
+    photoResult.src =
+        image;
 
 
-    /* =========================
-       SHOW RESULT
-    ========================= */
+    /*
+       Show result.
+    */
 
     resultSection.classList.remove(
         "hidden"
@@ -412,9 +539,297 @@ function capturePhoto() {
 }
 
 
-/* =========================
+/* =====================================================
+   PIXEL FILTERS
+===================================================== */
+
+function applyPixelFilter(imageData) {
+
+    const data =
+        imageData.data;
+
+
+    /*
+       NORMAL
+    */
+
+    if (
+        currentFilter ===
+        "normal"
+    ) {
+
+        return;
+
+    }
+
+
+    /*
+       Loop through pixels.
+
+       Every pixel has:
+
+       R
+       G
+       B
+       A
+    */
+
+    for (
+        let i = 0;
+        i < data.length;
+        i += 4
+    ) {
+
+        let r =
+            data[i];
+
+        let g =
+            data[i + 1];
+
+        let b =
+            data[i + 2];
+
+
+        /* =========================================
+           RETRO BLACK & WHITE
+        ========================================= */
+
+        if (
+            currentFilter ===
+            "retro"
+        ) {
+
+            /*
+               Convert to grayscale.
+            */
+
+            const gray =
+                0.299 * r +
+                0.587 * g +
+                0.114 * b;
+
+
+            /*
+               Increase contrast.
+            */
+
+            const contrast =
+                1.35;
+
+
+            r =
+                ((gray - 128) *
+                    contrast) + 128;
+
+            g =
+                ((gray - 128) *
+                    contrast) + 128;
+
+            b =
+                ((gray - 128) *
+                    contrast) + 128;
+
+
+            /*
+               Slight brightness.
+            */
+
+            r *= 1.05;
+            g *= 1.05;
+            b *= 1.05;
+
+        }
+
+
+        /* =========================================
+           Y2K
+        ========================================= */
+
+        else if (
+            currentFilter ===
+            "y2k"
+        ) {
+
+            /*
+               Increase saturation.
+            */
+
+            const avg =
+                (r + g + b) / 3;
+
+
+            const saturation =
+                1.5;
+
+
+            r =
+                avg +
+                (r - avg) *
+                saturation;
+
+            g =
+                avg +
+                (g - avg) *
+                saturation;
+
+            b =
+                avg +
+                (b - avg) *
+                saturation;
+
+
+            /*
+               Slight brightness.
+            */
+
+            r *= 1.08;
+            g *= 1.08;
+            b *= 1.08;
+
+        }
+
+
+        /* =========================================
+           FUJIFILM / FILM
+        ========================================= */
+
+        else if (
+            currentFilter ===
+            "film"
+        ) {
+
+            /*
+               Slightly reduce saturation.
+            */
+
+            const avg =
+                (r + g + b) / 3;
+
+
+            const saturation =
+                0.82;
+
+
+            r =
+                avg +
+                (r - avg) *
+                saturation;
+
+            g =
+                avg +
+                (g - avg) *
+                saturation;
+
+            b =
+                avg +
+                (b - avg) *
+                saturation;
+
+
+            /*
+               Slight contrast.
+            */
+
+            const contrast =
+                1.12;
+
+
+            r =
+                ((r - 128) *
+                    contrast) + 128;
+
+            g =
+                ((g - 128) *
+                    contrast) + 128;
+
+            b =
+                ((b - 128) *
+                    contrast) + 128;
+
+
+            /*
+               Slight brightness.
+            */
+
+            r *= 1.03;
+            g *= 1.03;
+            b *= 1.03;
+
+        }
+
+
+        /* =========================================
+           GLOW
+        ========================================= */
+
+        else if (
+            currentFilter ===
+            "glow"
+        ) {
+
+            /*
+               Lower contrast.
+            */
+
+            const contrast =
+                0.90;
+
+
+            r =
+                ((r - 128) *
+                    contrast) + 128;
+
+            g =
+                ((g - 128) *
+                    contrast) + 128;
+
+            b =
+                ((b - 128) *
+                    contrast) + 128;
+
+
+            /*
+               Increase brightness.
+            */
+
+            r *= 1.12;
+            g *= 1.12;
+            b *= 1.12;
+
+        }
+
+
+        /*
+           Prevent values outside
+           0 - 255.
+        */
+
+        data[i] =
+            Math.max(
+                0,
+                Math.min(255, r)
+            );
+
+        data[i + 1] =
+            Math.max(
+                0,
+                Math.min(255, g)
+            );
+
+        data[i + 2] =
+            Math.max(
+                0,
+                Math.min(255, b)
+            );
+
+    }
+
+}
+
+
+/* =====================================================
    RETAKE
-========================= */
+===================================================== */
 
 retakeButton.addEventListener(
     "click",
@@ -423,6 +838,7 @@ retakeButton.addEventListener(
         resultSection.classList.add(
             "hidden"
         );
+
 
         window.scrollTo({
             top: 0,
@@ -433,9 +849,9 @@ retakeButton.addEventListener(
 );
 
 
-/* =========================
+/* =====================================================
    DOWNLOAD
-========================= */
+===================================================== */
 
 downloadButton.addEventListener(
     "click",
@@ -444,11 +860,14 @@ downloadButton.addEventListener(
         const link =
             document.createElement("a");
 
+
         link.download =
             "my-photobooth-photo.jpg";
 
+
         link.href =
             photoResult.src;
+
 
         link.click();
 
