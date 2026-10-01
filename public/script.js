@@ -873,4 +873,3 @@ downloadButton.addEventListener(
 
     }
 );
-```
