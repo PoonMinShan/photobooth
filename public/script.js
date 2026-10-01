@@ -849,25 +849,16 @@ retakeButton.addEventListener(
 );
 
 
-/* =========================
+/* =====================================================
    DOWNLOAD
-========================= */
+===================================================== */
 
 downloadButton.addEventListener(
     "click",
     () => {
 
-        if (!photoResult.src) {
-
-            return;
-
-        }
-
-
         const link =
-            document.createElement(
-                "a"
-            );
+            document.createElement("a");
 
 
         link.download =
