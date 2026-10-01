@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
 
@@ -8,23 +9,45 @@
         content="width=device-width, initial-scale=1.0"
     >
 
+    <meta
+        name="theme-color"
+        content="#f4efe8"
+    >
+
     <title>My Photobooth</title>
 
-    <link rel="stylesheet" href="style.css">
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
 </head>
+
 
 <body>
 
     <main class="app">
 
-        <!-- HEADER -->
+
+        <!-- =========================
+             HEADER
+        ========================== -->
+
         <header class="header">
+
             <h1>PHOTOBOOTH</h1>
-            <p>Choose your look & capture the moment.</p>
+
+            <p>
+                Choose your look & capture the moment.
+            </p>
+
         </header>
 
 
-        <!-- CAMERA -->
+
+        <!-- =========================
+             CAMERA
+        ========================== -->
+
         <section class="camera-section">
 
             <div class="camera-wrapper">
@@ -36,7 +59,12 @@
                     muted
                 ></video>
 
-                <canvas id="canvas"></canvas>
+                <canvas
+                    id="canvas"
+                ></canvas>
+
+
+                <!-- COUNTDOWN -->
 
                 <div
                     id="countdown"
@@ -46,6 +74,7 @@
             </div>
 
 
+
             <!-- CAMERA CONTROLS -->
 
             <div class="camera-controls">
@@ -53,6 +82,7 @@
                 <button
                     id="switchCamera"
                     class="small-button"
+                    type="button"
                 >
                     ↻ Switch Camera
                 </button>
@@ -60,67 +90,93 @@
             </div>
 
 
-            <!-- FILTERS -->
+
+            <!-- =========================
+                 FILTERS
+            ========================== -->
 
             <section class="filters">
 
                 <h2>Choose your look</h2>
 
+
                 <div class="filter-buttons">
+
 
                     <button
                         class="filter-button active"
                         data-filter="normal"
+                        type="button"
                     >
                         Normal
                     </button>
 
+
                     <button
                         class="filter-button"
                         data-filter="retro"
+                        type="button"
                     >
                         Retro B&W
                     </button>
 
+
                     <button
                         class="filter-button"
                         data-filter="y2k"
+                        type="button"
                     >
                         Y2K
                     </button>
 
+
                     <button
                         class="filter-button"
                         data-filter="film"
+                        type="button"
                     >
-                        Film
+                        Fujifilm
                     </button>
+
 
                     <button
                         class="filter-button"
                         data-filter="glow"
+                        type="button"
                     >
                         Glow
                     </button>
+
 
                 </div>
 
             </section>
 
 
-            <!-- TAKE PHOTO -->
+
+            <!-- =========================
+                 TAKE PHOTO
+            ========================== -->
 
             <button
                 id="takePhoto"
                 class="take-photo"
+                type="button"
+                aria-label="Take photo"
             >
-                <span>●</span>
+
+                <span></span>
+
             </button>
+
 
         </section>
 
 
-        <!-- RESULT -->
+
+        <!-- =========================
+             RESULT
+        ========================== -->
 
         <section
             id="resultSection"
@@ -128,6 +184,7 @@
         >
 
             <h2>Your Photo</h2>
+
 
             <div class="photo-container">
 
@@ -138,18 +195,22 @@
 
             </div>
 
+
             <div class="result-buttons">
 
                 <button
                     id="retake"
                     class="secondary-button"
+                    type="button"
                 >
                     Retake
                 </button>
 
+
                 <button
                     id="download"
                     class="primary-button"
+                    type="button"
                 >
                     Download Photo
                 </button>
@@ -159,11 +220,19 @@
         </section>
 
 
-        <!-- FOOTER -->
+
+        <!-- =========================
+             FOOTER
+        ========================== -->
 
         <footer>
-            <p>Made with ♡</p>
+
+            <p>
+                Made with ♡
+            </p>
+
         </footer>
+
 
     </main>
 
@@ -171,4 +240,5 @@
     <script src="script.js"></script>
 
 </body>
+
 </html>

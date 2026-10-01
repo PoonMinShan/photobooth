@@ -1,3 +1,6 @@
+/* =========================
+   RESET
+========================= */
 
 * {
     box-sizing: border-box;
@@ -5,37 +8,80 @@
     padding: 0;
 }
 
+
+/* =========================
+   BODY
+========================= */
+
 body {
+
     min-height: 100vh;
+
     background: #f4efe8;
+
     color: #222;
-    font-family: Arial, sans-serif;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
 }
+
+
+/* =========================
+   APP
+========================= */
 
 .app {
+
     width: 100%;
+
     max-width: 900px;
+
     margin: auto;
-    padding: 30px 20px 50px;
+
+    padding:
+        30px
+        20px
+        50px;
+
 }
 
 
-/* HEADER */
+/* =========================
+   HEADER
+========================= */
 
 .header {
+
     text-align: center;
+
     margin-bottom: 30px;
+
 }
 
 .header h1 {
-    font-size: clamp(32px, 7vw, 60px);
+
+    font-size:
+        clamp(
+            32px,
+            7vw,
+            60px
+        );
+
     letter-spacing: 8px;
+
     margin-bottom: 10px;
+
 }
 
 .header p {
+
     font-size: 14px;
+
     opacity: 0.65;
+
 }
 
 
@@ -43,128 +89,55 @@ body {
    CAMERA
 ========================= */
 
+.camera-section {
+
+    width: 100%;
+
+}
+
+
 .camera-wrapper {
+
     position: relative;
+
     width: 100%;
+
     max-width: 650px;
+
     margin: auto;
+
     overflow: hidden;
+
     border-radius: 20px;
+
     background: #111;
+
     aspect-ratio: 3 / 4;
+
 }
 
-#camera,
-#canvas {
+
+/* VIDEO */
+
+#camera {
+
     width: 100%;
+
     height: 100%;
+
     object-fit: cover;
+
     display: block;
+
 }
+
+
+/* CANVAS */
 
 #canvas {
+
     display: none;
-}
 
-
-/* =========================
-   LIVE CAMERA MIRROR
-========================= */
-
-/*
-   Front camera = mirror
-   Rear camera = normal
-*/
-
-#camera.mirrored {
-    transform: scaleX(-1);
-}
-
-
-/* =========================
-   FILTER OVERLAY
-========================= */
-
-.camera-wrapper::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-
-    pointer-events: none;
-
-    opacity: 0;
-
-    background: transparent;
-
-    transition:
-        opacity 0.25s ease,
-        background 0.25s ease;
-
-    mix-blend-mode: normal;
-}
-
-
-/* RETRO B&W */
-
-.camera-wrapper.filter-retro::after {
-    opacity: 0.25;
-
-    background:
-        radial-gradient(
-            ellipse at center,
-            transparent 45%,
-            rgba(0, 0, 0, 0.28) 100%
-        );
-
-    mix-blend-mode: multiply;
-}
-
-
-/* Y2K */
-
-.camera-wrapper.filter-y2k::after {
-    opacity: 0.22;
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(255, 130, 190, 0.18),
-            rgba(255, 220, 180, 0.12)
-        );
-
-    mix-blend-mode: screen;
-}
-
-
-/* FILM */
-
-.camera-wrapper.filter-film::after {
-    opacity: 0.18;
-
-    background:
-        radial-gradient(
-            ellipse at center,
-            transparent 48%,
-            rgba(45, 30, 20, 0.25) 100%
-        );
-
-    mix-blend-mode: multiply;
-}
-
-
-/* GLOW */
-
-.camera-wrapper.filter-glow::after {
-    opacity: 0.18;
-
-    background:
-        radial-gradient(
-            circle at center,
-            rgba(255, 245, 235, 0.45),
-            transparent 65%
-        );
-
-    mix-blend-mode: screen;
 }
 
 
@@ -173,72 +146,343 @@ body {
 ========================= */
 
 .countdown {
+
     position: absolute;
+
     inset: 0;
 
     display: flex;
+
     justify-content: center;
+
     align-items: center;
 
-    font-size: clamp(80px, 20vw, 180px);
+    font-size:
+        clamp(
+            80px,
+            20vw,
+            180px
+        );
+
     font-weight: bold;
 
     color: white;
 
     text-shadow:
-        0 5px 20px rgba(0,0,0,0.5);
+        0 5px 20px
+        rgba(0, 0, 0, 0.5);
 
     z-index: 10;
+
+}
+
+
+.hidden {
+
+    display: none !important;
+
 }
 
 
 /* =========================
-   FILTER BUTTONS
+   CAMERA CONTROLS
+========================= */
+
+.camera-controls {
+
+    display: flex;
+
+    justify-content: center;
+
+    margin: 15px 0;
+
+}
+
+
+.small-button {
+
+    border: none;
+
+    background: transparent;
+
+    padding:
+        10px
+        15px;
+
+    cursor: pointer;
+
+    opacity: 0.7;
+
+    font-size: 14px;
+
+}
+
+
+.small-button:hover {
+
+    opacity: 1;
+
+}
+
+
+/* =========================
+   FILTERS
 ========================= */
 
 .filters {
+
     text-align: center;
+
     margin: 25px 0;
+
 }
+
 
 .filters h2 {
+
     font-size: 16px;
+
     margin-bottom: 15px;
+
 }
+
 
 .filter-buttons {
+
     display: flex;
+
     flex-wrap: wrap;
+
     justify-content: center;
+
     gap: 8px;
+
 }
 
+
 .filter-button {
-    border: 1px solid #222;
+
+    border:
+        1px solid #222;
+
     background: transparent;
+
     border-radius: 100px;
 
-    padding: 10px 15px;
+    padding:
+        10px
+        15px;
 
     cursor: pointer;
 
     transition:
-        transform 0.2s ease,
-        background 0.2s ease,
-        color 0.2s ease;
+        0.2s ease;
+
+    font-size: 14px;
+
 }
+
 
 .filter-button:hover {
-    transform: translateY(-2px);
+
+    transform:
+        translateY(-2px);
+
 }
 
-.filter-button:active {
-    transform: scale(0.96);
-}
 
 .filter-button.active {
+
     background: #222;
+
     color: white;
+
+}
+
+
+/* =========================
+   TAKE PHOTO BUTTON
+========================= */
+
+.take-photo {
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    width: 75px;
+
+    height: 75px;
+
+    margin: 25px auto;
+
+    border-radius: 50%;
+
+    border:
+        8px solid white;
+
+    background: #111;
+
+    box-shadow:
+        0 0 0 2px #111;
+
+    cursor: pointer;
+
+    transition:
+        0.2s ease;
+
+}
+
+
+.take-photo span {
+
+    width: 20px;
+
+    height: 20px;
+
+    background: white;
+
+    border-radius: 50%;
+
+    display: block;
+
+}
+
+
+.take-photo:hover {
+
+    transform: scale(1.05);
+
+}
+
+
+.take-photo:active {
+
+    transform: scale(0.9);
+
+}
+
+
+/* =========================
+   RESULT
+========================= */
+
+.result-section {
+
+    text-align: center;
+
+    margin-top: 40px;
+
+}
+
+
+.result-section h2 {
+
+    margin-bottom: 20px;
+
+}
+
+
+.photo-container {
+
+    max-width: 500px;
+
+    margin: auto;
+
+}
+
+
+#photoResult {
+
+    display: block;
+
+    width: 100%;
+
+    border-radius: 12px;
+
+}
+
+
+/* =========================
+   RESULT BUTTONS
+========================= */
+
+.result-buttons {
+
+    display: flex;
+
+    justify-content: center;
+
+    flex-wrap: wrap;
+
+    gap: 10px;
+
+    margin-top: 20px;
+
+}
+
+
+.primary-button,
+.secondary-button {
+
+    border: none;
+
+    border-radius: 100px;
+
+    padding:
+        14px
+        22px;
+
+    cursor: pointer;
+
+    font-size: 14px;
+
+}
+
+
+.primary-button {
+
+    background: #222;
+
+    color: white;
+
+}
+
+
+.secondary-button {
+
+    background: #ddd;
+
+    color: #222;
+
+}
+
+
+.primary-button:hover,
+.secondary-button:hover {
+
+    transform:
+        translateY(-1px);
+
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+footer {
+
+    text-align: center;
+
+    margin-top: 50px;
+
+    font-size: 12px;
+
+    opacity: 0.5;
+
 }
 
 
@@ -248,177 +492,45 @@ body {
 
 @media (max-width: 600px) {
 
-    .camera-wrapper {
-        border-radius: 14px;
-    }
-
-    .filter-buttons {
-        gap: 6px;
-    }
-
-    .filter-button {
-        padding: 9px 12px;
-        font-size: 12px;
-    }
-
-}
-
-
-/* FILTERS */
-
-.filters {
-    text-align: center;
-    margin: 25px 0;
-}
-
-.filters h2 {
-    font-size: 16px;
-    margin-bottom: 15px;
-}
-
-.filter-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px;
-}
-
-.filter-button {
-    border: 1px solid #222;
-    background: transparent;
-    border-radius: 100px;
-    padding: 10px 15px;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.filter-button:hover {
-    transform: translateY(-2px);
-}
-
-.filter-button.active {
-    background: #222;
-    color: white;
-}
-
-
-/* TAKE PHOTO */
-
-.take-photo {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    width: 75px;
-    height: 75px;
-
-    margin: 25px auto;
-
-    border-radius: 50%;
-    border: 8px solid white;
-
-    background: #111;
-
-    box-shadow:
-        0 0 0 2px #111;
-
-    cursor: pointer;
-
-    transition: 0.2s;
-}
-
-.take-photo span {
-    font-size: 25px;
-    color: white;
-}
-
-.take-photo:active {
-    transform: scale(0.9);
-}
-
-
-/* RESULT */
-
-.result-section {
-    text-align: center;
-    margin-top: 40px;
-}
-
-.result-section h2 {
-    margin-bottom: 20px;
-}
-
-.photo-container {
-    max-width: 500px;
-    margin: auto;
-}
-
-#photoResult {
-    display: block;
-    width: 100%;
-    border-radius: 12px;
-}
-
-
-/* RESULT BUTTONS */
-
-.result-buttons {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 20px;
-}
-
-.primary-button,
-.secondary-button {
-    border: none;
-    border-radius: 100px;
-    padding: 14px 22px;
-    cursor: pointer;
-    font-size: 14px;
-}
-
-.primary-button {
-    background: #222;
-    color: white;
-}
-
-.secondary-button {
-    background: #ddd;
-    color: #222;
-}
-
-
-/* FOOTER */
-
-footer {
-    text-align: center;
-    margin-top: 50px;
-    font-size: 12px;
-    opacity: 0.5;
-}
-
-
-/* MOBILE */
-
-@media (max-width: 600px) {
-
     .app {
-        padding: 20px 15px 40px;
+
+        padding:
+            20px
+            15px
+            40px;
+
     }
+
 
     .camera-wrapper {
+
         border-radius: 14px;
+
     }
+
 
     .filter-buttons {
+
         gap: 6px;
+
     }
 
+
     .filter-button {
-        padding: 9px 12px;
+
+        padding:
+            9px
+            12px;
+
         font-size: 12px;
+
+    }
+
+
+    .header h1 {
+
+        letter-spacing: 5px;
+
     }
 
 }
