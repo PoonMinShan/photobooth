@@ -39,11 +39,10 @@ body {
 }
 
 
-/* CAMERA */
-
-.camera-section {
-    width: 100%;
-}
+```css
+/* =========================
+   CAMERA
+========================= */
 
 .camera-wrapper {
     position: relative;
@@ -69,7 +68,110 @@ body {
 }
 
 
-/* COUNTDOWN */
+/* =========================
+   LIVE CAMERA MIRROR
+========================= */
+
+/*
+   Front camera = mirror
+   Rear camera = normal
+*/
+
+#camera.mirrored {
+    transform: scaleX(-1);
+}
+
+
+/* =========================
+   FILTER OVERLAY
+========================= */
+
+.camera-wrapper::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    pointer-events: none;
+
+    opacity: 0;
+
+    background: transparent;
+
+    transition:
+        opacity 0.25s ease,
+        background 0.25s ease;
+
+    mix-blend-mode: normal;
+}
+
+
+/* RETRO B&W */
+
+.camera-wrapper.filter-retro::after {
+    opacity: 0.25;
+
+    background:
+        radial-gradient(
+            ellipse at center,
+            transparent 45%,
+            rgba(0, 0, 0, 0.28) 100%
+        );
+
+    mix-blend-mode: multiply;
+}
+
+
+/* Y2K */
+
+.camera-wrapper.filter-y2k::after {
+    opacity: 0.22;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255, 130, 190, 0.18),
+            rgba(255, 220, 180, 0.12)
+        );
+
+    mix-blend-mode: screen;
+}
+
+
+/* FILM */
+
+.camera-wrapper.filter-film::after {
+    opacity: 0.18;
+
+    background:
+        radial-gradient(
+            ellipse at center,
+            transparent 48%,
+            rgba(45, 30, 20, 0.25) 100%
+        );
+
+    mix-blend-mode: multiply;
+}
+
+
+/* GLOW */
+
+.camera-wrapper.filter-glow::after {
+    opacity: 0.18;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(255, 245, 235, 0.45),
+            transparent 65%
+        );
+
+    mix-blend-mode: screen;
+}
+
+
+/* =========================
+   COUNTDOWN
+========================= */
 
 .countdown {
     position: absolute;
@@ -86,28 +188,82 @@ body {
 
     text-shadow:
         0 5px 20px rgba(0,0,0,0.5);
+
+    z-index: 10;
 }
 
-.hidden {
-    display: none !important;
+
+/* =========================
+   FILTER BUTTONS
+========================= */
+
+.filters {
+    text-align: center;
+    margin: 25px 0;
 }
 
+.filters h2 {
+    font-size: 16px;
+    margin-bottom: 15px;
+}
 
-/* CAMERA BUTTONS */
-
-.camera-controls {
+.filter-buttons {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
-    margin: 15px 0;
+    gap: 8px;
 }
 
-.small-button {
-    border: none;
+.filter-button {
+    border: 1px solid #222;
     background: transparent;
+    border-radius: 100px;
+
     padding: 10px 15px;
+
     cursor: pointer;
-    opacity: 0.7;
+
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease,
+        color 0.2s ease;
 }
+
+.filter-button:hover {
+    transform: translateY(-2px);
+}
+
+.filter-button:active {
+    transform: scale(0.96);
+}
+
+.filter-button.active {
+    background: #222;
+    color: white;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 600px) {
+
+    .camera-wrapper {
+        border-radius: 14px;
+    }
+
+    .filter-buttons {
+        gap: 6px;
+    }
+
+    .filter-button {
+        padding: 9px 12px;
+        font-size: 12px;
+    }
+
+}
+```
 
 
 /* FILTERS */

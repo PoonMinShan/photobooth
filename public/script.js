@@ -1,3 +1,4 @@
+```javascript
 const video = document.getElementById("camera");
 const canvas = document.getElementById("canvas");
 const countdown = document.getElementById("countdown");
@@ -13,9 +14,65 @@ const downloadButton = document.getElementById("download");
 
 const filterButtons = document.querySelectorAll(".filter-button");
 
+const cameraWrapper = document.querySelector(".camera-wrapper");
+
 let currentStream = null;
 let currentFilter = "normal";
 let usingFrontCamera = true;
+let capturedImage = null;
+
+
+/* =========================
+   FILTER SETTINGS
+========================= */
+
+const filters = {
+
+    normal: {
+        css:
+            "none",
+
+        canvas:
+            "none"
+    },
+
+
+    retro: {
+        css:
+            "grayscale(1) contrast(1.18) brightness(1.06)",
+
+        canvas:
+            "grayscale(1) contrast(1.18) brightness(1.06)"
+    },
+
+
+    y2k: {
+        css:
+            "saturate(1.35) contrast(1.03) brightness(1.08) sepia(0.08)",
+
+        canvas:
+            "saturate(1.35) contrast(1.03) brightness(1.08) sepia(0.08)"
+    },
+
+
+    film: {
+        css:
+            "contrast(0.96) saturate(0.86) brightness(1.05) sepia(0.08)",
+
+        canvas:
+            "contrast(0.96) saturate(0.86) brightness(1.05) sepia(0.08)"
+    },
+
+
+    glow: {
+        css:
+            "brightness(1.10) contrast(0.88) saturate(1.08)",
+
+        canvas:
+            "brightness(1.10) contrast(0.88) saturate(1.08)"
+    }
+
+};
 
 
 /* =========================
@@ -26,28 +83,37 @@ async function startCamera() {
 
     try {
 
-        // Stop previous camera stream
         if (currentStream) {
-            currentStream.getTracks().forEach(track => {
-                track.stop();
-            });
+
+            currentStream
+                .getTracks()
+                .forEach(track => track.stop());
+
         }
 
-        // Check browser camera support
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+
+        if (
+            !navigator.mediaDevices ||
+            !navigator.mediaDevices.getUserMedia
+        ) {
 
             alert(
-                "Your browser does not support camera access. Please use a modern browser such as Chrome, Safari or Edge."
+                "Your browser does not support camera access. Please use Chrome, Safari or Edge."
             );
 
             return;
+
         }
 
+
         const constraints = {
+
             video: {
-                facingMode: usingFrontCamera
-                    ? "user"
-                    : "environment",
+
+                facingMode:
+                    usingFrontCamera
+                        ? "user"
+                        : "environment",
 
                 width: {
                     ideal: 1920
@@ -56,36 +122,67 @@ async function startCamera() {
                 height: {
                     ideal: 1080
                 }
+
             },
 
             audio: false
+
         };
 
-        console.log("Requesting camera...");
 
         currentStream =
-            await navigator.mediaDevices.getUserMedia(constraints);
+            await navigator.mediaDevices.getUserMedia(
+                constraints
+            );
 
-        console.log("Camera permission granted!");
 
-        // Attach camera stream to video
         video.srcObject = currentStream;
 
-        // Make sure the video plays
         video.muted = true;
         video.playsInline = true;
 
+
         await video.play();
 
-        console.log("Camera is now playing!");
+
+        /*
+           MIRROR FRONT CAMERA
+        */
+
+        if (usingFrontCamera) {
+
+            video.classList.add("mirrored");
+
+        }
+
+        else {
+
+            video.classList.remove("mirrored");
+
+        }
+
+
+        /*
+           Reapply current filter
+        */
+
+        updateCameraFilter();
 
     }
 
+
     catch (error) {
 
-        console.error("Camera error:", error);
+        console.error(
+            "Camera error:",
+            error
+        );
 
-        if (error.name === "NotAllowedError") {
+
+        if (
+            error.name ===
+            "NotAllowedError"
+        ) {
 
             alert(
                 "Camera permission was denied. Please allow camera access in your browser settings and refresh the page."
@@ -93,7 +190,11 @@ async function startCamera() {
 
         }
 
-        else if (error.name === "NotFoundError") {
+
+        else if (
+            error.name ===
+            "NotFoundError"
+        ) {
 
             alert(
                 "No camera was found on this device."
@@ -101,10 +202,11 @@ async function startCamera() {
 
         }
 
+
         else {
 
             alert(
-                "We could not access your camera. Please check your browser camera permissions and try again."
+                "We could not access your camera. Please check your camera permissions."
             );
 
         }
@@ -129,7 +231,8 @@ switchCameraButton.addEventListener(
     "click",
     async () => {
 
-        usingFrontCamera = !usingFrontCamera;
+        usingFrontCamera =
+            !usingFrontCamera;
 
         await startCamera();
 
@@ -147,18 +250,24 @@ filterButtons.forEach(button => {
         "click",
         () => {
 
-            // Remove active state
             filterButtons.forEach(btn => {
-                btn.classList.remove("active");
+
+                btn.classList.remove(
+                    "active"
+                );
+
             });
 
-            // Add active state
-            button.classList.add("active");
 
-            // Get selected filter
-            currentFilter = button.dataset.filter;
+            button.classList.add(
+                "active"
+            );
 
-            // Apply filter
+
+            currentFilter =
+                button.dataset.filter;
+
+
             updateCameraFilter();
 
         }
@@ -168,48 +277,52 @@ filterButtons.forEach(button => {
 
 
 /* =========================
-   CAMERA PREVIEW FILTER
+   LIVE CAMERA FILTER
 ========================= */
 
 function updateCameraFilter() {
 
-    switch (currentFilter) {
-
-        case "retro":
-
-            video.style.filter =
-                "grayscale(1) contrast(1.25) brightness(1.05)";
-
-            break;
+    const selected =
+        filters[currentFilter];
 
 
-        case "y2k":
+    if (!selected) {
 
-            video.style.filter =
-                "saturate(1.35) contrast(1.05) brightness(1.08)";
+        video.style.filter = "none";
 
-            break;
+        return;
 
-
-        case "film":
-
-            video.style.filter =
-                "contrast(1.08) saturate(0.9) brightness(1.04)";
-
-            break;
+    }
 
 
-        case "glow":
-
-            video.style.filter =
-                "brightness(1.12) contrast(0.92) saturate(1.05)";
-
-            break;
+    video.style.filter =
+        selected.css;
 
 
-        default:
+    /*
+       Remove previous overlay classes
+    */
 
-            video.style.filter = "none";
+    cameraWrapper.classList.remove(
+        "filter-retro",
+        "filter-y2k",
+        "filter-film",
+        "filter-glow"
+    );
+
+
+    /*
+       Add current overlay
+    */
+
+    if (
+        currentFilter !==
+        "normal"
+    ) {
+
+        cameraWrapper.classList.add(
+            `filter-${currentFilter}`
+        );
 
     }
 
@@ -226,41 +339,72 @@ takePhotoButton.addEventListener(
 );
 
 
+/* =========================
+   COUNTDOWN
+========================= */
+
 function startCountdown() {
+
+    /*
+       Prevent multiple countdowns
+    */
+
+    takePhotoButton.disabled = true;
+
 
     let number = 3;
 
-    countdown.classList.remove("hidden");
 
-    countdown.textContent = number;
+    countdown.classList.remove(
+        "hidden"
+    );
 
-    const timer = setInterval(() => {
 
-        number--;
+    countdown.textContent =
+        number;
 
-        if (number > 0) {
 
-            countdown.textContent = number;
+    const timer =
+        setInterval(() => {
 
-        }
+            number--;
 
-        else {
 
-            clearInterval(timer);
+            if (number > 0) {
 
-            countdown.textContent = "♥";
+                countdown.textContent =
+                    number;
 
-            setTimeout(() => {
+            }
 
-                countdown.classList.add("hidden");
 
-                capturePhoto();
+            else {
 
-            }, 300);
+                clearInterval(timer);
 
-        }
 
-    }, 1000);
+                countdown.textContent =
+                    "♥";
+
+
+                setTimeout(() => {
+
+                    countdown.classList.add(
+                        "hidden"
+                    );
+
+
+                    capturePhoto();
+
+
+                    takePhotoButton.disabled =
+                        false;
+
+                }, 300);
+
+            }
+
+        }, 1000);
 
 }
 
@@ -271,24 +415,45 @@ function startCountdown() {
 
 function capturePhoto() {
 
-    // Make sure camera has loaded
-    if (!video.videoWidth || !video.videoHeight) {
+    if (
+        !video.videoWidth ||
+        !video.videoHeight
+    ) {
 
         alert(
             "The camera is not ready yet. Please wait a moment and try again."
         );
 
+        takePhotoButton.disabled =
+            false;
+
         return;
 
     }
 
-    const width = video.videoWidth;
-    const height = video.videoHeight;
 
-    canvas.width = width;
-    canvas.height = height;
+    const width =
+        video.videoWidth;
 
-    const context = canvas.getContext("2d");
+    const height =
+        video.videoHeight;
+
+
+    canvas.width =
+        width;
+
+    canvas.height =
+        height;
+
+
+    const context =
+        canvas.getContext(
+            "2d",
+            {
+                willReadFrequently: true
+            }
+        );
+
 
     context.save();
 
@@ -299,55 +464,31 @@ function capturePhoto() {
 
     if (usingFrontCamera) {
 
-        context.translate(width, 0);
-        context.scale(-1, 1);
+        context.translate(
+            width,
+            0
+        );
+
+        context.scale(
+            -1,
+            1
+        );
 
     }
 
 
     /* =========================
-       APPLY FILTER TO PHOTO
+       APPLY FILTER
     ========================= */
 
-    switch (currentFilter) {
-
-        case "retro":
-
-            context.filter =
-                "grayscale(1) contrast(1.25) brightness(1.05)";
-
-            break;
+    const selected =
+        filters[currentFilter];
 
 
-        case "y2k":
-
-            context.filter =
-                "saturate(1.35) contrast(1.05) brightness(1.08)";
-
-            break;
-
-
-        case "film":
-
-            context.filter =
-                "contrast(1.08) saturate(0.9) brightness(1.04)";
-
-            break;
-
-
-        case "glow":
-
-            context.filter =
-                "brightness(1.12) contrast(0.92) saturate(1.05)";
-
-            break;
-
-
-        default:
-
-            context.filter = "none";
-
-    }
+    context.filter =
+        selected
+            ? selected.canvas
+            : "none";
 
 
     /* =========================
@@ -362,31 +503,309 @@ function capturePhoto() {
         height
     );
 
+
     context.restore();
 
 
+    /*
+       Reset canvas filter
+    */
+
+    context.filter =
+        "none";
+
+
     /* =========================
-       CREATE IMAGE
+       ADD EFFECTS
     ========================= */
 
-    const image = canvas.toDataURL(
-        "image/jpeg",
-        0.95
+    addPhotoEffects(
+        context,
+        width,
+        height
     );
 
 
-    photoResult.src = image;
+    /* =========================
+       CREATE JPEG
+    ========================= */
+
+    capturedImage =
+        canvas.toDataURL(
+            "image/jpeg",
+            0.95
+        );
+
+
+    photoResult.src =
+        capturedImage;
 
 
     /* =========================
        SHOW RESULT
     ========================= */
 
-    resultSection.classList.remove("hidden");
+    resultSection.classList.remove(
+        "hidden"
+    );
+
 
     resultSection.scrollIntoView({
         behavior: "smooth"
     });
+
+}
+
+
+/* =========================
+   PHOTO EFFECTS
+========================= */
+
+function addPhotoEffects(
+    context,
+    width,
+    height
+) {
+
+
+    /* =========================
+       VIGNETTE
+    ========================= */
+
+    if (
+        currentFilter ===
+        "retro" ||
+        currentFilter ===
+        "film"
+    ) {
+
+        const gradient =
+            context.createRadialGradient(
+                width / 2,
+                height / 2,
+                width * 0.25,
+                width / 2,
+                height / 2,
+                width * 0.75
+            );
+
+
+        gradient.addColorStop(
+            0,
+            "rgba(0,0,0,0)"
+        );
+
+
+        gradient.addColorStop(
+            0.7,
+            "rgba(0,0,0,0.03)"
+        );
+
+
+        gradient.addColorStop(
+            1,
+            "rgba(0,0,0,0.28)"
+        );
+
+
+        context.fillStyle =
+            gradient;
+
+
+        context.fillRect(
+            0,
+            0,
+            width,
+            height
+        );
+
+    }
+
+
+    /* =========================
+       GLOW
+    ========================= */
+
+    if (
+        currentFilter ===
+        "glow"
+    ) {
+
+        /*
+           Create a soft bright overlay
+        */
+
+        const glow =
+            context.createRadialGradient(
+                width / 2,
+                height / 2,
+                width * 0.1,
+                width / 2,
+                height / 2,
+                width * 0.7
+            );
+
+
+        glow.addColorStop(
+            0,
+            "rgba(255,245,235,0.14)"
+        );
+
+
+        glow.addColorStop(
+            0.65,
+            "rgba(255,235,220,0.05)"
+        );
+
+
+        glow.addColorStop(
+            1,
+            "rgba(255,255,255,0)"
+        );
+
+
+        context.fillStyle =
+            glow;
+
+
+        context.fillRect(
+            0,
+            0,
+            width,
+            height
+        );
+
+    }
+
+
+    /* =========================
+       FILM GRAIN
+    ========================= */
+
+    if (
+        currentFilter ===
+        "retro" ||
+        currentFilter ===
+        "y2k" ||
+        currentFilter ===
+        "film"
+    ) {
+
+        addFilmGrain(
+            context,
+            width,
+            height
+        );
+
+    }
+
+}
+
+
+/* =========================
+   FILM GRAIN
+========================= */
+
+function addFilmGrain(
+    context,
+    width,
+    height
+) {
+
+    /*
+       Grain density
+    */
+
+    const amount =
+        currentFilter === "retro"
+            ? 0.10
+            : currentFilter === "film"
+                ? 0.075
+                : 0.045;
+
+
+    const imageData =
+        context.getImageData(
+            0,
+            0,
+            width,
+            height
+        );
+
+
+    const pixels =
+        imageData.data;
+
+
+    /*
+       Process every few pixels
+       rather than creating extremely
+       heavy grain.
+    */
+
+    for (
+        let i = 0;
+        i < pixels.length;
+        i += 4
+    ) {
+
+        if (
+            Math.random() >
+            amount
+        ) {
+
+            continue;
+
+        }
+
+
+        const noise =
+            (Math.random() - 0.5)
+            * 45;
+
+
+        pixels[i] =
+            clamp(
+                pixels[i] + noise
+            );
+
+
+        pixels[i + 1] =
+            clamp(
+                pixels[i + 1] + noise
+            );
+
+
+        pixels[i + 2] =
+            clamp(
+                pixels[i + 2] + noise
+            );
+
+    }
+
+
+    context.putImageData(
+        imageData,
+        0,
+        0
+    );
+
+}
+
+
+/* =========================
+   CLAMP
+========================= */
+
+function clamp(value) {
+
+    return Math.max(
+        0,
+        Math.min(
+            255,
+            value
+        )
+    );
 
 }
 
@@ -399,7 +818,18 @@ retakeButton.addEventListener(
     "click",
     () => {
 
-        resultSection.classList.add("hidden");
+        resultSection.classList.add(
+            "hidden"
+        );
+
+
+        photoResult.src =
+            "";
+
+
+        capturedImage =
+            null;
+
 
         window.scrollTo({
             top: 0,
@@ -418,15 +848,29 @@ downloadButton.addEventListener(
     "click",
     () => {
 
-        const link = document.createElement("a");
+        if (!capturedImage) {
+
+            return;
+
+        }
+
+
+        const link =
+            document.createElement(
+                "a"
+            );
+
 
         link.download =
-            "my-photobooth-photo.jpg";
+            `photobooth-${currentFilter}.jpg`;
+
 
         link.href =
-            photoResult.src;
+            capturedImage;
+
 
         link.click();
 
     }
 );
+```
