@@ -1,4 +1,4 @@
-```javascript
+javascript
 const video = document.getElementById("camera");
 const canvas = document.getElementById("canvas");
 const countdown = document.getElementById("countdown");
@@ -321,7 +321,7 @@ function updateCameraFilter() {
     ) {
 
         cameraWrapper.classList.add(
-            `filter-${currentFilter}`
+            `filter-$,{currentFilter}`
         );
 
     }
@@ -862,7 +862,7 @@ downloadButton.addEventListener(
 
 
         link.download =
-            `photobooth-${currentFilter}.jpg`;
+            `;photobooth-$,{currentFilter}.jpg`;
 
 
         link.href =
