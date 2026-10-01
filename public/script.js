@@ -1,48 +1,20 @@
-/* =========================
-   ELEMENTS
-========================= */
+const video = document.getElementById("camera");
+const canvas = document.getElementById("canvas");
+const countdown = document.getElementById("countdown");
 
-const video =
-    document.getElementById("camera");
+const takePhotoButton = document.getElementById("takePhoto");
+const switchCameraButton = document.getElementById("switchCamera");
 
-const canvas =
-    document.getElementById("canvas");
+const resultSection = document.getElementById("resultSection");
+const photoResult = document.getElementById("photoResult");
 
-const countdown =
-    document.getElementById("countdown");
+const retakeButton = document.getElementById("retake");
+const downloadButton = document.getElementById("download");
 
-const takePhotoButton =
-    document.getElementById("takePhoto");
-
-const switchCameraButton =
-    document.getElementById("switchCamera");
-
-const resultSection =
-    document.getElementById("resultSection");
-
-const photoResult =
-    document.getElementById("photoResult");
-
-const retakeButton =
-    document.getElementById("retake");
-
-const downloadButton =
-    document.getElementById("download");
-
-const filterButtons =
-    document.querySelectorAll(
-        ".filter-button"
-    );
-
-
-/* =========================
-   VARIABLES
-========================= */
+const filterButtons = document.querySelectorAll(".filter-button");
 
 let currentStream = null;
-
 let currentFilter = "normal";
-
 let usingFrontCamera = true;
 
 
@@ -54,45 +26,27 @@ async function startCamera() {
 
     try {
 
-        /* STOP PREVIOUS CAMERA */
-
         if (currentStream) {
-
-            currentStream
-                .getTracks()
-                .forEach(track => {
-                    track.stop();
-                });
-
+            currentStream.getTracks().forEach(track => {
+                track.stop();
+            });
         }
-
-
-        /* CHECK CAMERA SUPPORT */
 
         if (
             !navigator.mediaDevices ||
             !navigator.mediaDevices.getUserMedia
         ) {
-
             alert(
-                "Your browser does not support camera access. Please use Chrome, Safari or Edge."
+                "Your browser does not support camera access."
             );
-
             return;
-
         }
 
-
-        /* CAMERA SETTINGS */
-
         const constraints = {
-
             video: {
-
-                facingMode:
-                    usingFrontCamera
-                        ? "user"
-                        : "environment",
+                facingMode: usingFrontCamera
+                    ? "user"
+                    : "environment",
 
                 width: {
                     ideal: 1920
@@ -101,66 +55,32 @@ async function startCamera() {
                 height: {
                     ideal: 1080
                 }
-
             },
 
             audio: false
-
         };
 
-
-        /* REQUEST CAMERA */
-
         currentStream =
-            await navigator
-                .mediaDevices
-                .getUserMedia(
-                    constraints
-                );
+            await navigator.mediaDevices.getUserMedia(
+                constraints
+            );
 
-
-        /* CONNECT CAMERA */
-
-        video.srcObject =
-            currentStream;
-
-
-        /* MOBILE SETTINGS */
+        video.srcObject = currentStream;
 
         video.muted = true;
-
         video.playsInline = true;
-
-
-        /* PLAY VIDEO */
 
         await video.play();
 
-
-        /* UPDATE MIRROR */
-
-        updateMirror();
-
-
-        console.log(
-            "Camera started successfully."
-        );
+        updateCameraFilter();
 
     }
 
-
     catch (error) {
 
-        console.error(
-            "Camera error:",
-            error
-        );
+        console.error("Camera error:", error);
 
-
-        if (
-            error.name ===
-            "NotAllowedError"
-        ) {
+        if (error.name === "NotAllowedError") {
 
             alert(
                 "Camera permission was denied. Please allow camera access and refresh the page."
@@ -168,11 +88,7 @@ async function startCamera() {
 
         }
 
-
-        else if (
-            error.name ===
-            "NotFoundError"
-        ) {
+        else if (error.name === "NotFoundError") {
 
             alert(
                 "No camera was found on this device."
@@ -180,11 +96,10 @@ async function startCamera() {
 
         }
 
-
         else {
 
             alert(
-                "We could not access your camera. Please check your camera permissions."
+                "We could not access your camera. Please check your browser permissions."
             );
 
         }
@@ -195,30 +110,7 @@ async function startCamera() {
 
 
 /* =========================
-   MIRROR FRONT CAMERA
-========================= */
-
-function updateMirror() {
-
-    if (usingFrontCamera) {
-
-        video.style.transform =
-            "scaleX(-1)";
-
-    }
-
-    else {
-
-        video.style.transform =
-            "scaleX(1)";
-
-    }
-
-}
-
-
-/* =========================
-   START CAMERA
+   START
 ========================= */
 
 startCamera();
@@ -232,8 +124,7 @@ switchCameraButton.addEventListener(
     "click",
     async () => {
 
-        usingFrontCamera =
-            !usingFrontCamera;
+        usingFrontCamera = !usingFrontCamera;
 
         await startCamera();
 
@@ -245,132 +136,109 @@ switchCameraButton.addEventListener(
    FILTER BUTTONS
 ========================= */
 
-filterButtons.forEach(
-    button => {
+filterButtons.forEach(button => {
 
-        button.addEventListener(
-            "click",
-            () => {
+    button.addEventListener(
+        "click",
+        () => {
 
-                /* REMOVE ACTIVE */
+            filterButtons.forEach(btn => {
+                btn.classList.remove("active");
+            });
 
-                filterButtons.forEach(
-                    btn => {
+            button.classList.add("active");
 
-                        btn.classList.remove(
-                            "active"
-                        );
+            currentFilter =
+                button.dataset.filter;
 
-                    }
-                );
+            updateCameraFilter();
 
+        }
+    );
 
-                /* ACTIVATE BUTTON */
-
-                button.classList.add(
-                    "active"
-                );
-
-
-                /* GET FILTER */
-
-                currentFilter =
-                    button.dataset.filter;
-
-
-                /* APPLY FILTER */
-
-                updateCameraFilter();
-
-            }
-        );
-
-    }
-);
+});
 
 
 /* =========================
-   LIVE CAMERA FILTERS
+   PREVIEW FILTER
 ========================= */
 
 function updateCameraFilter() {
 
     switch (currentFilter) {
 
-
-        /* NORMAL */
-
-        case "normal":
-
-            video.style.filter =
-                "none";
-
-            break;
-
-
-        /* RETRO B&W */
-
         case "retro":
 
             video.style.filter =
-                `
-                grayscale(1)
-                contrast(1.18)
-                brightness(1.05)
-                sepia(0.08)
-                `;
+                "grayscale(1) contrast(1.35) brightness(1.05)";
 
             break;
 
-
-        /* Y2K */
 
         case "y2k":
 
             video.style.filter =
-                `
-                saturate(1.35)
-                contrast(1.05)
-                brightness(1.08)
-                sepia(0.08)
-                `;
+                "saturate(1.5) contrast(1.05) brightness(1.08)";
 
             break;
 
-
-        /* FUJIFILM */
 
         case "film":
 
             video.style.filter =
-                `
-                saturate(0.88)
-                contrast(1.08)
-                brightness(1.04)
-                sepia(0.04)
-                `;
+                "contrast(1.12) saturate(0.82) brightness(1.03)";
 
             break;
 
 
-        /* GLOW */
-
         case "glow":
 
             video.style.filter =
-                `
-                brightness(1.12)
-                contrast(0.92)
-                saturate(1.08)
-                `;
+                "brightness(1.12) contrast(0.9) saturate(1.08)";
 
             break;
 
 
         default:
 
-            video.style.filter =
-                "none";
+            video.style.filter = "none";
+
+    }
+
+}
+
+
+/* =========================
+   GET CANVAS FILTER
+========================= */
+
+function getCanvasFilter() {
+
+    switch (currentFilter) {
+
+        case "retro":
+
+            return "grayscale(1) contrast(1.35) brightness(1.05)";
+
+
+        case "y2k":
+
+            return "saturate(1.5) contrast(1.05) brightness(1.08)";
+
+
+        case "film":
+
+            return "contrast(1.12) saturate(0.82) brightness(1.03)";
+
+
+        case "glow":
+
+            return "brightness(1.12) contrast(0.9) saturate(1.08)";
+
+
+        default:
+
+            return "none";
 
     }
 
@@ -387,126 +255,42 @@ takePhotoButton.addEventListener(
 );
 
 
-/* =========================
-   COUNTDOWN
-========================= */
-
 function startCountdown() {
 
     let number = 3;
 
+    countdown.classList.remove("hidden");
 
-    countdown.classList.remove(
-        "hidden"
-    );
-
-
-    countdown.textContent =
-        number;
+    countdown.textContent = number;
 
 
-    const timer =
-        setInterval(
-            () => {
+    const timer = setInterval(() => {
 
-                number--;
+        number--;
 
+        if (number > 0) {
 
-                if (number > 0) {
+            countdown.textContent = number;
 
-                    countdown.textContent =
-                        number;
+        }
 
-                }
+        else {
 
+            clearInterval(timer);
 
-                else {
+            countdown.textContent = "♥";
 
-                    clearInterval(
-                        timer
-                    );
+            setTimeout(() => {
 
+                countdown.classList.add("hidden");
 
-                    countdown.textContent =
-                        "♥";
+                capturePhoto();
 
+            }, 300);
 
-                    setTimeout(
-                        () => {
+        }
 
-                            countdown.classList.add(
-                                "hidden"
-                            );
-
-
-                            capturePhoto();
-
-                        },
-                        300
-                    );
-
-                }
-
-            },
-            1000
-        );
-
-}
-
-
-/* =========================
-   PHOTO FILTER
-========================= */
-
-function getPhotoFilter() {
-
-    switch (currentFilter) {
-
-
-        case "retro":
-
-            return `
-                grayscale(1)
-                contrast(1.18)
-                brightness(1.05)
-                sepia(0.08)
-            `;
-
-
-        case "y2k":
-
-            return `
-                saturate(1.35)
-                contrast(1.05)
-                brightness(1.08)
-                sepia(0.08)
-            `;
-
-
-        case "film":
-
-            return `
-                saturate(0.88)
-                contrast(1.08)
-                brightness(1.04)
-                sepia(0.04)
-            `;
-
-
-        case "glow":
-
-            return `
-                brightness(1.12)
-                contrast(0.92)
-                saturate(1.08)
-            `;
-
-
-        default:
-
-            return "none";
-
-    }
+    }, 1000);
 
 }
 
@@ -516,9 +300,6 @@ function getPhotoFilter() {
 ========================= */
 
 function capturePhoto() {
-
-
-    /* CAMERA READY? */
 
     if (
         !video.videoWidth ||
@@ -541,19 +322,24 @@ function capturePhoto() {
         video.videoHeight;
 
 
-    /* CANVAS SIZE */
-
-    canvas.width =
-        width;
-
-    canvas.height =
-        height;
+    canvas.width = width;
+    canvas.height = height;
 
 
     const context =
-        canvas.getContext(
-            "2d"
-        );
+        canvas.getContext("2d");
+
+
+    /*
+       IMPORTANT:
+
+       We apply the filter directly
+       to the canvas BEFORE drawing
+       the video.
+    */
+
+    context.filter =
+        getCanvasFilter();
 
 
     context.save();
@@ -565,29 +351,15 @@ function capturePhoto() {
 
     if (usingFrontCamera) {
 
-        context.translate(
-            width,
-            0
-        );
+        context.translate(width, 0);
 
-        context.scale(
-            -1,
-            1
-        );
+        context.scale(-1, 1);
 
     }
 
 
     /* =========================
-       PHOTO FILTER
-    ========================= */
-
-    context.filter =
-        getPhotoFilter();
-
-
-    /* =========================
-       DRAW IMAGE
+       DRAW FILTERED PHOTO
     ========================= */
 
     context.drawImage(
@@ -602,8 +374,16 @@ function capturePhoto() {
     context.restore();
 
 
+    /*
+       Reset canvas filter
+       after capturing.
+    */
+
+    context.filter = "none";
+
+
     /* =========================
-       CREATE JPEG
+       CREATE IMAGE
     ========================= */
 
     const image =
@@ -613,20 +393,17 @@ function capturePhoto() {
         );
 
 
+    photoResult.src = image;
+
+
     /* =========================
-       SHOW PHOTO
+       SHOW RESULT
     ========================= */
-
-    photoResult.src =
-        image;
-
 
     resultSection.classList.remove(
         "hidden"
     );
 
-
-    /* SCROLL TO RESULT */
 
     resultSection.scrollIntoView({
         behavior: "smooth"
@@ -647,7 +424,6 @@ retakeButton.addEventListener(
             "hidden"
         );
 
-
         window.scrollTo({
             top: 0,
             behavior: "smooth"
@@ -665,26 +441,14 @@ downloadButton.addEventListener(
     "click",
     () => {
 
-        if (!photoResult.src) {
-
-            return;
-
-        }
-
-
         const link =
-            document.createElement(
-                "a"
-            );
-
+            document.createElement("a");
 
         link.download =
             "my-photobooth-photo.jpg";
 
-
         link.href =
             photoResult.src;
-
 
         link.click();
 
