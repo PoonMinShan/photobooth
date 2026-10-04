@@ -1,51 +1,26 @@
-/* =========================
-   RESET
-========================= */
-
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
-
-/* =========================
-   BODY
-========================= */
-
-body {
-
-    min-height: 100vh;
-
+html {
     background: #f4efe8;
-
-    color: #222;
-
-    font-family:
-        Arial,
-        Helvetica,
-        sans-serif;
-
 }
 
-
-/* =========================
-   APP
-========================= */
+body {
+    min-height: 100vh;
+    background: #f4efe8;
+    color: #222;
+    font-family: Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
 
 .app {
-
     width: 100%;
-
     max-width: 900px;
-
     margin: auto;
-
-    padding:
-        30px
-        20px
-        50px;
-
+    padding: 30px 20px 50px;
 }
 
 
@@ -54,34 +29,19 @@ body {
 ========================= */
 
 .header {
-
     text-align: center;
-
     margin-bottom: 30px;
-
 }
 
 .header h1 {
-
-    font-size:
-        clamp(
-            32px,
-            7vw,
-            60px
-        );
-
+    font-size: clamp(32px, 7vw, 60px);
     letter-spacing: 8px;
-
     margin-bottom: 10px;
-
 }
 
 .header p {
-
     font-size: 14px;
-
     opacity: 0.65;
-
 }
 
 
@@ -90,58 +50,34 @@ body {
 ========================= */
 
 .camera-section {
-
     width: 100%;
-
 }
-
 
 .camera-wrapper {
-
     position: relative;
-
     width: 100%;
-
     max-width: 650px;
-
     margin: auto;
-
     overflow: hidden;
-
     border-radius: 20px;
-
     background: #111;
-
     aspect-ratio: 3 / 4;
-
 }
-
-
-/* VIDEO */
-
 
 #camera {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
-    transform: scaleX(-1);
+
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+
+    transform-origin: center center;
 }
 
 #canvas {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
     display: none;
-}
-
-
-/* CANVAS */
-
-#canvas {
-
-    display: none;
-
 }
 
 
@@ -150,41 +86,25 @@ body {
 ========================= */
 
 .countdown {
-
     position: absolute;
-
     inset: 0;
 
     display: flex;
-
     justify-content: center;
-
     align-items: center;
 
-    font-size:
-        clamp(
-            80px,
-            20vw,
-            180px
-        );
-
+    font-size: clamp(80px, 20vw, 180px);
     font-weight: bold;
 
     color: white;
 
-    text-shadow:
-        0 5px 20px
-        rgba(0, 0, 0, 0.5);
+    text-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
 
     z-index: 10;
-
 }
 
-
 .hidden {
-
     display: none !important;
-
 }
 
 
@@ -193,39 +113,18 @@ body {
 ========================= */
 
 .camera-controls {
-
     display: flex;
-
     justify-content: center;
-
     margin: 15px 0;
-
 }
-
 
 .small-button {
-
     border: none;
-
     background: transparent;
-
-    padding:
-        10px
-        15px;
-
+    padding: 10px 15px;
     cursor: pointer;
-
     opacity: 0.7;
-
-    font-size: 14px;
-
-}
-
-
-.small-button:hover {
-
-    opacity: 1;
-
+    color: #222;
 }
 
 
@@ -234,138 +133,77 @@ body {
 ========================= */
 
 .filters {
-
     text-align: center;
-
     margin: 25px 0;
-
 }
-
 
 .filters h2 {
-
     font-size: 16px;
-
     margin-bottom: 15px;
-
 }
-
 
 .filter-buttons {
-
     display: flex;
-
     flex-wrap: wrap;
-
     justify-content: center;
-
     gap: 8px;
-
 }
-
 
 .filter-button {
-
-    border:
-        1px solid #222;
-
+    border: 1px solid #222;
     background: transparent;
-
     border-radius: 100px;
-
-    padding:
-        10px
-        15px;
-
+    padding: 10px 15px;
     cursor: pointer;
-
-    transition:
-        0.2s ease;
-
-    font-size: 14px;
-
+    transition: 0.2s;
+    color: #222;
 }
-
 
 .filter-button:hover {
-
-    transform:
-        translateY(-2px);
-
+    transform: translateY(-2px);
 }
 
-
 .filter-button.active {
-
     background: #222;
-
     color: white;
-
 }
 
 
 /* =========================
-   TAKE PHOTO BUTTON
+   TAKE PHOTO
 ========================= */
 
 .take-photo {
-
     display: flex;
-
     justify-content: center;
-
     align-items: center;
 
     width: 75px;
-
     height: 75px;
 
     margin: 25px auto;
 
     border-radius: 50%;
-
-    border:
-        8px solid white;
+    border: 8px solid white;
 
     background: #111;
 
-    box-shadow:
-        0 0 0 2px #111;
+    box-shadow: 0 0 0 2px #111;
 
     cursor: pointer;
 
-    transition:
-        0.2s ease;
+    transition: 0.2s;
 
+    -webkit-tap-highlight-color: transparent;
 }
-
 
 .take-photo span {
-
-    width: 20px;
-
-    height: 20px;
-
-    background: white;
-
-    border-radius: 50%;
-
-    display: block;
-
+    font-size: 25px;
+    color: white;
 }
-
-
-.take-photo:hover {
-
-    transform: scale(1.05);
-
-}
-
 
 .take-photo:active {
-
     transform: scale(0.9);
-
 }
 
 
@@ -374,38 +212,23 @@ body {
 ========================= */
 
 .result-section {
-
     text-align: center;
-
     margin-top: 40px;
-
 }
-
 
 .result-section h2 {
-
     margin-bottom: 20px;
-
 }
-
 
 .photo-container {
-
     max-width: 500px;
-
     margin: auto;
-
 }
 
-
 #photoResult {
-
     display: block;
-
     width: 100%;
-
     border-radius: 12px;
-
 }
 
 
@@ -414,62 +237,30 @@ body {
 ========================= */
 
 .result-buttons {
-
     display: flex;
-
     justify-content: center;
-
     flex-wrap: wrap;
-
     gap: 10px;
-
     margin-top: 20px;
-
 }
-
 
 .primary-button,
 .secondary-button {
-
     border: none;
-
     border-radius: 100px;
-
-    padding:
-        14px
-        22px;
-
+    padding: 14px 22px;
     cursor: pointer;
-
     font-size: 14px;
-
 }
-
 
 .primary-button {
-
     background: #222;
-
     color: white;
-
 }
-
 
 .secondary-button {
-
     background: #ddd;
-
     color: #222;
-
-}
-
-
-.primary-button:hover,
-.secondary-button:hover {
-
-    transform:
-        translateY(-1px);
-
 }
 
 
@@ -478,15 +269,10 @@ body {
 ========================= */
 
 footer {
-
     text-align: center;
-
     margin-top: 50px;
-
     font-size: 12px;
-
     opacity: 0.5;
-
 }
 
 
@@ -497,44 +283,20 @@ footer {
 @media (max-width: 600px) {
 
     .app {
-
-        padding:
-            20px
-            15px
-            40px;
-
+        padding: 20px 15px 40px;
     }
-
 
     .camera-wrapper {
-
         border-radius: 14px;
-
     }
-
 
     .filter-buttons {
-
         gap: 6px;
-
     }
-
 
     .filter-button {
-
-        padding:
-            9px
-            12px;
-
+        padding: 9px 12px;
         font-size: 12px;
-
-    }
-
-
-    .header h1 {
-
-        letter-spacing: 5px;
-
     }
 
 }
